@@ -78,7 +78,7 @@ const ImpactCard = ({ stat }: { stat: typeof impactStats[0] }) => {
             {stat.value.toLocaleString()} / {stat.goal.toLocaleString()}
           </span>
         </div>
-        <Progress value={stat.progress} className="h-2 bg-eco-green/20" indicatorClassName="bg-eco-green" />
+        <Progress value={stat.progress} className="h-2 bg-eco-green/20" />
       </div>
     </div>
   );
