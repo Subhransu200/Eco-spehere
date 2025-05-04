@@ -1,73 +1,51 @@
-# Welcome to your Lovable project
 
-## Project info
+# EcoSphere Application
 
-**URL**: https://lovable.dev/projects/7794d6c8-7102-4632-8787-4cae4fff7458
+A full-stack application for eco-friendly communities.
 
-## How can I edit this code?
+## Project Structure
 
-There are several ways of editing your application.
+This project is organized into frontend and backend directories:
 
-**Use Lovable**
+- `frontend/` - React frontend application built with Vite, React Router, and Tailwind CSS
+- `backend/` - Express.js backend server
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7794d6c8-7102-4632-8787-4cae4fff7458) and start prompting.
+## Development
 
-Changes made via Lovable will be committed automatically to this repo.
+### Frontend
 
-**Use your preferred IDE**
+1. Navigate to the frontend directory:
+```
+cd frontend
+```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+2. Install dependencies:
+```
+npm install
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will run on port 5173 by default.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Backend
 
-**Use GitHub Codespaces**
+1. Navigate to the backend directory:
+```
+cd backend
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. Install dependencies:
+```
+npm install
+```
 
-## What technologies are used for this project?
+3. Start the development server:
+```
+npm run dev
+```
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/7794d6c8-7102-4632-8787-4cae4fff7458) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+The backend will run on port 5000 by default.

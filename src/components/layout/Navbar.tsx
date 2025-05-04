@@ -20,9 +20,10 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav - Updated order to place Feed second */}
         <nav className="hidden md:flex items-center gap-6">
           <Link to="/" className="text-gray-700 hover:text-eco-green font-medium">Home</Link>
+          <Link to="/feed" className="text-gray-700 hover:text-eco-green font-medium">Feed</Link>
           <Link to="/communities" className="text-gray-700 hover:text-eco-green font-medium">Communities</Link>
           <Link to="/marketplace" className="text-gray-700 hover:text-eco-green font-medium">Marketplace</Link>
           <Link to="/about" className="text-gray-700 hover:text-eco-green font-medium">About</Link>
@@ -64,7 +65,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu - Updated order to place Feed second */}
       <div className={cn(
         "fixed inset-x-0 top-16 z-50 bg-white border-b border-gray-200 md:hidden transition-transform duration-300 ease-in-out",
         isMenuOpen ? "transform translate-y-0" : "transform -translate-y-full"
@@ -76,6 +77,13 @@ const Navbar = () => {
             onClick={() => setIsMenuOpen(false)}
           >
             Home
+          </Link>
+          <Link 
+            to="/feed" 
+            className="px-4 py-2 hover:bg-gray-100 rounded-md"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Feed
           </Link>
           <Link 
             to="/communities" 

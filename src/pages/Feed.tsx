@@ -1,5 +1,5 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -8,6 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Heart, MessageCircle, Share2, Calendar, Filter, Image, Send } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { fetchPosts } from '@/services/api';
+import { toast } from '@/hooks/use-toast';
 
 // Mock data for posts - using the same data structure as in RecentPosts
 const posts = [
@@ -83,6 +85,22 @@ const posts = [
   }
 ];
 
+// Type definition for a post
+interface Post {
+  id: number;
+  user: {
+    name: string;
+    avatar: string;
+  };
+  community: string;
+  date: string;
+  content: string;
+  image?: string;
+  likes: number;
+  comments: number;
+  shares: number;
+}
+
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
@@ -91,7 +109,7 @@ const formatDate = (dateString: string) => {
   });
 };
 
-const PostCard = ({ post }: { post: typeof posts[0] }) => {
+const PostCard = ({ post }: { post: Post }) => {
   return (
     <Card className="mb-6 overflow-hidden">
       <div className="p-5">
@@ -175,6 +193,23 @@ const Feed = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   
+  // Fetch posts using React Query
+  const { data: posts, isLoading, error } = useQuery({
+    queryKey: ['posts'],
+    queryFn: fetchPosts,
+  });
+
+  // Show error toast if there's an error fetching posts
+  React.useEffect(() => {
+    if (error) {
+      toast({
+        title: "Error fetching posts",
+        description: "Could not load posts. Please try again later.",
+        variant: "destructive",
+      });
+    }
+  }, [error]);
+
   return (
     <Layout>
       <div className="bg-eco-green/10 py-8">
@@ -217,9 +252,19 @@ const Feed = () => {
             <CreatePost />
             
             <TabsContent value="all" className="mt-0">
-              {posts.map(post => (
-                <PostCard key={post.id} post={post} />
-              ))}
+              {isLoading ? (
+                <div className="flex justify-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eco-green"></div>
+                </div>
+              ) : posts ? (
+                posts.map((post: Post) => (
+                  <PostCard key={post.id} post={post} />
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No posts found.</p>
+                </div>
+              )}
             </TabsContent>
             
             <TabsContent value="following" className="mt-0">
@@ -234,17 +279,23 @@ const Feed = () => {
             </TabsContent>
             
             <TabsContent value="trending" className="mt-0">
-              {posts
-                .sort((a, b) => b.likes - a.likes)
-                .slice(0, 3)
-                .map(post => (
-                  <PostCard key={post.id} post={post} />
-                ))
-              }
+              {posts && posts.length > 0 ? (
+                [...posts]
+                  .sort((a: Post, b: Post) => b.likes - a.likes)
+                  .slice(0, 3)
+                  .map((post: Post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-500">No trending posts found.</p>
+                </div>
+              )}
             </TabsContent>
           </div>
           
           <div className="hidden md:block">
+            {/* Trending Communities sidebar */}
             <Card className="mb-6">
               <div className="p-5">
                 <h3 className="text-lg font-semibold mb-4">Trending Communities</h3>
