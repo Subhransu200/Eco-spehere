@@ -1,18 +1,20 @@
 
 # EcoSphere Backend
 
-This is the backend server for the EcoSphere application.
+This is the Flask backend server for the EcoSphere application.
 
 ## Setup
 
-1. Install dependencies:
+1. Install Python dependencies:
 ```
-npm install
+pip install -r requirements.txt
 ```
 
-2. Start the development server:
+2. Make sure MongoDB is installed and running on your local machine.
+
+3. Start the development server:
 ```
-npm run dev
+python server.py
 ```
 
 The server will run on port 5000 by default.
@@ -27,3 +29,4 @@ The server will run on port 5000 by default.
 - CRUD operations for communities
 - CRUD operations for marketplace items
 - User profiles
+
