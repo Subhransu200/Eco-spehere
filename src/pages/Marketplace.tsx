@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Filter, ShoppingBag, Star, Plus, Minus } from 'lucide-react';
+import { Search, Filter, ShoppingBag, Star, Plus, Minus, ImageOff, Loader } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Mock data for products
 const products = [
@@ -47,7 +47,7 @@ const products = [
     price: 24.99,
     rating: 4.6,
     reviews: 215,
-    image: "https://images.unsplash.com/photo-1562157873-818bc0726f68",
+    image: "https://images.unsplash.com/photo-1562143407151-7111542de6e8",
     category: "Clothing",
     vendor: "EcoThreads",
     description: "100% organic cotton, sustainably sourced and ethically produced."
@@ -98,21 +98,57 @@ const products = [
   },
 ];
 
+// Image component with fallback
+const ProductImage = ({ src, alt }: { src: string; alt: string }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  
+  const fallbackImage = "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80";
+  
+  return (
+    <div className="relative h-full w-full">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+          <Loader className="h-8 w-8 animate-spin text-eco-green" />
+        </div>
+      )}
+      
+      {hasError && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-100">
+          <ImageOff className="h-8 w-8 text-gray-400 mb-2" />
+          <span className="text-xs text-gray-500">Image unavailable</span>
+        </div>
+      )}
+      
+      <img 
+        src={hasError ? fallbackImage : src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading || hasError ? 'opacity-0' : 'opacity-100'} hover:scale-105 transition-transform duration-500`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setHasError(true);
+        }}
+      />
+    </div>
+  );
+};
+
 const ProductCard = ({ product }: { product: typeof products[0] }) => {
   const [quantity, setQuantity] = useState(1);
   
   return (
     <div className="eco-card h-full flex flex-col">
       <div className="h-48 overflow-hidden relative">
-        <img 
+        <ProductImage 
           src={product.image} 
-          alt={product.name} 
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+          alt={product.name}
         />
         <div className="absolute top-2 right-2 bg-eco-green/10 text-eco-green px-2 py-1 rounded-full text-xs font-medium">
           {product.category}
         </div>
       </div>
+      
       <div className="p-5 flex-grow flex flex-col">
         <h3 className="text-lg font-semibold text-eco-green-dark mb-1">{product.name}</h3>
         
@@ -163,8 +199,39 @@ const ProductCard = ({ product }: { product: typeof products[0] }) => {
   );
 };
 
+// Loading skeleton for product cards
+const ProductCardSkeleton = () => (
+  <div className="eco-card h-full flex flex-col">
+    <Skeleton className="h-48 w-full" />
+    <div className="p-5 flex-grow flex flex-col">
+      <Skeleton className="h-6 w-3/4 mb-2" />
+      <Skeleton className="h-4 w-1/2 mb-2" />
+      <Skeleton className="h-4 w-1/3 mb-3" />
+      <Skeleton className="h-16 w-full mb-4" />
+      <div className="mt-auto">
+        <div className="flex justify-between items-center mb-3">
+          <Skeleton className="h-7 w-16" />
+          <Skeleton className="h-8 w-24" />
+        </div>
+        <Skeleton className="h-10 w-full" />
+      </div>
+    </div>
+  </div>
+);
+
 const Marketplace = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Simulate loading for demonstration purposes
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    
+    return () => clearTimeout(timer);
+  }, []);
   
   return (
     <Layout>
@@ -215,46 +282,56 @@ const Marketplace = () => {
             </Button>
           </div>
           
-          <TabsContent value="all" className="mt-0">
+          {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map(product => (
-                <ProductCard key={product.id} product={product} />
+              {Array(8).fill(0).map((_, index) => (
+                <ProductCardSkeleton key={index} />
               ))}
             </div>
-          </TabsContent>
-          
-          <TabsContent value="home" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products
-                .filter(product => product.category === "Home")
-                .map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))
-              }
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="kitchen" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products
-                .filter(product => product.category === "Kitchen")
-                .map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))
-              }
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="clothing" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products
-                .filter(product => product.category === "Clothing")
-                .map(product => (
-                  <ProductCard key={product.id} product={product} />
-                ))
-              }
-            </div>
-          </TabsContent>
+          ) : (
+            <>
+              <TabsContent value="all" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {products.map(product => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="home" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {products
+                    .filter(product => product.category === "Home")
+                    .map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))
+                  }
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="kitchen" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {products
+                    .filter(product => product.category === "Kitchen")
+                    .map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))
+                  }
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="clothing" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {products
+                    .filter(product => product.category === "Clothing")
+                    .map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))
+                  }
+                </div>
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </Layout>
