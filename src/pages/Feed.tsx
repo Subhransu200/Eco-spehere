@@ -11,80 +11,7 @@ import { Heart, MessageCircle, Share2, Calendar, Filter, Image, Send } from 'luc
 import { Link } from 'react-router-dom';
 import { fetchPosts } from '@/services/api';
 import { toast } from '@/hooks/use-toast';
-
-// Mock data for posts - using the same data structure as in RecentPosts
-const posts = [
-  {
-    id: 1,
-    user: {
-      name: "Emma Johnson",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    community: "Urban Gardeners",
-    date: "2023-04-15T10:30:00Z",
-    content: "Just finished setting up my balcony garden! Used recycled containers and composted soil. Look at these beautiful tomato plants already sprouting!",
-    image: "https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-    likes: 248,
-    comments: 42,
-    shares: 18
-  },
-  {
-    id: 2,
-    user: {
-      name: "Michael Chen",
-      avatar: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    community: "Ocean Guardians",
-    date: "2023-04-12T16:45:00Z",
-    content: "Today's beach cleanup was a huge success! Our team collected over 50kg of plastic waste before it could reach the ocean. Small actions, big impact.",
-    image: "https://images.unsplash.com/photo-1610459716431-e07fc72cafdd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-    likes: 357,
-    comments: 67,
-    shares: 89
-  },
-  {
-    id: 3,
-    user: {
-      name: "Sofia Rodriguez",
-      avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    community: "Waste Warriors",
-    date: "2023-04-10T09:15:00Z",
-    content: "Excited to share that our community workshop on composting was fully booked! So many people eager to learn how to turn kitchen waste into garden gold. #ZeroWaste",
-    image: "https://images.unsplash.com/photo-1605600659873-d808a13e4d2a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-    likes: 189,
-    comments: 32,
-    shares: 12
-  },
-  {
-    id: 4,
-    user: {
-      name: "David Wilson",
-      avatar: "https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    community: "Renewable Energy Network",
-    date: "2023-04-08T14:20:00Z",
-    content: "Just installed solar panels on my roof! Expected to reduce my carbon footprint by 4 tons of CO2 per year. The installation was surprisingly quick and the government rebates made it much more affordable than I expected.",
-    image: "https://images.unsplash.com/photo-1559302995-f1d7613ae035?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-    likes: 276,
-    comments: 51,
-    shares: 34
-  },
-  {
-    id: 5,
-    user: {
-      name: "Aisha Patel",
-      avatar: "https://images.unsplash.com/photo-1551788515-75f4b711caae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80"
-    },
-    community: "Sustainable Fashion",
-    date: "2023-04-05T11:10:00Z",
-    content: "Hosted a clothing swap event at our community center today! Over 50 people participated and we estimate that we saved about 200 garments from ending up in landfills. Plus, everyone left with 'new' items for their wardrobe without spending a penny!",
-    image: "https://images.unsplash.com/photo-1525562723836-dca67a71d5f1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-    likes: 214,
-    comments: 39,
-    shares: 27
-  }
-];
+import { Skeleton } from '@/components/ui/skeleton';
 
 // Type definition for a post
 interface Post {
@@ -110,12 +37,56 @@ const formatDate = (dateString: string) => {
   });
 };
 
+// Image fallback handler component
+const ImageWithFallback = ({ src, alt, className }: { src?: string, alt: string, className?: string }) => {
+  const [error, setError] = useState(false);
+  const fallbackImage = "https://images.unsplash.com/photo-1581092921461-7edd2bec4c15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
+  
+  if (!src || error) {
+    return <img src={fallbackImage} alt={alt} className={className} />;
+  }
+
+  return (
+    <img 
+      src={src} 
+      alt={alt} 
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+};
+
+const PostCardSkeleton = () => (
+  <Card className="mb-6 overflow-hidden">
+    <div className="p-5">
+      <div className="flex items-center gap-3 mb-3">
+        <Skeleton className="w-10 h-10 rounded-full" />
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-40" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+      <Skeleton className="h-48 w-full mt-4 mb-4" />
+      <div className="flex justify-between items-center pt-4">
+        <Skeleton className="h-4 w-12" />
+        <Skeleton className="h-4 w-12" />
+        <Skeleton className="h-4 w-12" />
+      </div>
+    </div>
+  </Card>
+);
+
 const PostCard = ({ post }: { post: Post }) => {
   return (
     <Card className="mb-6 overflow-hidden">
       <div className="p-5">
         <div className="flex items-center gap-3 mb-3">
-          <img 
+          <ImageWithFallback 
             src={post.user.avatar} 
             alt={post.user.name} 
             className="w-10 h-10 rounded-full object-cover"
@@ -139,7 +110,7 @@ const PostCard = ({ post }: { post: Post }) => {
         
         {post.image && (
           <div className="mb-4">
-            <img 
+            <ImageWithFallback 
               src={post.image} 
               alt="Post content" 
               className="w-full rounded-md object-cover max-h-96"
@@ -194,10 +165,13 @@ const Feed = () => {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState<string>("");
   
-  // Fetch posts using React Query
-  const { data: fetchedPosts, isLoading, error } = useQuery({
+  // Fetch posts using React Query with improved configuration
+  const { data: posts, isLoading, error } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
+    retryDelay: 1000,
   });
 
   // Show error toast if there's an error fetching posts
@@ -205,14 +179,16 @@ const Feed = () => {
     if (error) {
       toast({
         title: "Error fetching posts",
-        description: "Could not load posts. Please try again later.",
+        description: "Could not load posts. Showing cached data instead.",
         variant: "destructive",
       });
     }
   }, [error]);
 
-  // Use the fetched posts or fallback to mock data
-  const displayPosts = fetchedPosts || posts;
+  // Generate skeleton cards for loading state
+  const skeletonCards = Array(3).fill(0).map((_, index) => (
+    <PostCardSkeleton key={`skeleton-${index}`} />
+  ));
 
   return (
     <Layout>
@@ -256,11 +232,9 @@ const Feed = () => {
               
               <TabsContent value="all" className="mt-0">
                 {isLoading ? (
-                  <div className="flex justify-center py-8">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eco-green"></div>
-                  </div>
-                ) : displayPosts ? (
-                  displayPosts.map((post: Post) => (
+                  <>{skeletonCards}</>
+                ) : posts && posts.length > 0 ? (
+                  posts.map((post: Post) => (
                     <PostCard key={post.id} post={post} />
                   ))
                 ) : (
@@ -282,8 +256,10 @@ const Feed = () => {
               </TabsContent>
               
               <TabsContent value="trending" className="mt-0">
-                {displayPosts && displayPosts.length > 0 ? (
-                  [...displayPosts]
+                {isLoading ? (
+                  <>{skeletonCards}</>
+                ) : posts && posts.length > 0 ? (
+                  [...posts]
                     .sort((a: Post, b: Post) => b.likes - a.likes)
                     .slice(0, 3)
                     .map((post: Post) => (

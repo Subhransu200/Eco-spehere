@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Heart, MessageCircle, Share2, Calendar } from 'lucide-react';
@@ -58,11 +58,30 @@ const formatDate = (dateString: string) => {
   });
 };
 
+// Image fallback handler component
+const ImageWithFallback = ({ src, alt, className }: { src?: string, alt: string, className?: string }) => {
+  const [error, setError] = useState(false);
+  const fallbackImage = "https://images.unsplash.com/photo-1581092921461-7edd2bec4c15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
+  
+  if (!src || error) {
+    return <img src={fallbackImage} alt={alt} className={className} />;
+  }
+
+  return (
+    <img 
+      src={src} 
+      alt={alt} 
+      className={className}
+      onError={() => setError(true)}
+    />
+  );
+};
+
 const PostCard = ({ post }: { post: typeof posts[0] }) => {
   return (
     <article className="eco-card">
       <div>
-        <img 
+        <ImageWithFallback 
           src={post.image} 
           alt="Post" 
           className="w-full h-48 md:h-56 object-cover"
@@ -70,7 +89,7 @@ const PostCard = ({ post }: { post: typeof posts[0] }) => {
       </div>
       <div className="p-5">
         <div className="flex items-center gap-3 mb-3">
-          <img 
+          <ImageWithFallback 
             src={post.user.avatar} 
             alt={post.user.name} 
             className="w-10 h-10 rounded-full object-cover"

@@ -5,17 +5,45 @@ from pymongo import MongoClient
 import json
 from datetime import datetime
 from bson import json_util
+import os
+import logging
 
 app = Flask(__name__)
-CORS(app)
+# Allow all origins for development, restrict this in production
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
-# Connect to MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['ecosphere']
-posts_collection = db['posts']
+# Configure basic logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Connect to MongoDB with error handling
+try:
+    client = MongoClient('mongodb://localhost:27017/')
+    db = client['ecosphere']
+    posts_collection = db['posts']
+    logger.info("Connected to MongoDB successfully")
+except Exception as e:
+    logger.error(f"Failed to connect to MongoDB: {e}")
+    # Create a fallback collection if MongoDB isn't available
+    # In a real app, you might want to handle this differently
+    class DummyCollection:
+        def __init__(self):
+            self.posts = []
+        
+        def find(self):
+            return self.posts
+        
+        def count_documents(self, query):
+            return len(self.posts)
+        
+        def insert_many(self, documents):
+            self.posts.extend(documents)
+    
+    posts_collection = DummyCollection()
 
 # Initialize with some sample data if collection is empty
 if posts_collection.count_documents({}) == 0:
+    logger.info("Initializing sample posts data")
     sample_posts = [
         {
             "id": 1,
@@ -60,20 +88,39 @@ if posts_collection.count_documents({}) == 0:
             "shares": 12
         }
     ]
-    posts_collection.insert_many(sample_posts)
+    try:
+        posts_collection.insert_many(sample_posts)
+    except Exception as e:
+        logger.error(f"Failed to insert sample data: {e}")
 
 # Helper function to parse MongoDB objects to JSON
 def parse_json(data):
-    return json.loads(json_util.dumps(data))
+    try:
+        return json.loads(json_util.dumps(data))
+    except Exception as e:
+        logger.error(f"Error parsing JSON: {e}")
+        return []
 
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
     try:
+        logger.info("Fetching posts from database")
         posts = list(posts_collection.find())
         # Convert ObjectId to string
         return jsonify(parse_json(posts))
     except Exception as e:
+        logger.error(f"Error fetching posts: {e}")
         return jsonify({"error": str(e)}), 500
 
+# Health check endpoint
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "ok", "message": "API is running"}), 200
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # Get port from environment variable or use 5000 as default
+    port = int(os.environ.get('PORT', 5000))
+    debug = os.environ.get('FLASK_ENV') == 'development'
+    
+    logger.info(f"Starting Flask server on port {port}")
+    app.run(host='0.0.0.0', debug=debug, port=port)
