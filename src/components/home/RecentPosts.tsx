@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Heart, MessageCircle, Share2, Calendar } from 'lucide-react';
+import { ArrowRight, Heart, MessageCircle, Share2, Calendar, ImageOff } from 'lucide-react';
 
 // Mock data for posts
 const posts = [
@@ -29,7 +29,7 @@ const posts = [
     community: "Ocean Guardians",
     date: "2023-04-12T16:45:00Z",
     content: "Today's beach cleanup was a huge success! Our team collected over 50kg of plastic waste before it could reach the ocean. Small actions, big impact.",
-    image: "https://images.unsplash.com/photo-1610459716431-e07fc72cafdd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+    image: "https://images.unsplash.com/photo-1581092921461-7edd2bec4c15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
     likes: 357,
     comments: 67,
     shares: 89
@@ -60,20 +60,36 @@ const formatDate = (dateString: string) => {
 
 // Image fallback handler component
 const ImageWithFallback = ({ src, alt, className }: { src?: string, alt: string, className?: string }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const fallbackImage = "https://images.unsplash.com/photo-1581092921461-7edd2bec4c15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
   
   if (!src || error) {
-    return <img src={fallbackImage} alt={alt} className={className} />;
+    return (
+      <div className={`${className} bg-gray-100 flex items-center justify-center`}>
+        <ImageOff className="h-8 w-8 text-gray-400" />
+      </div>
+    );
   }
 
   return (
-    <img 
-      src={src} 
-      alt={alt} 
-      className={className}
-      onError={() => setError(true)}
-    />
+    <>
+      {isLoading && (
+        <div className={`${className} bg-gray-100 animate-pulse flex items-center justify-center`}>
+          <div className="h-8 w-8 rounded-full bg-gray-300 animate-pulse"></div>
+        </div>
+      )}
+      <img 
+        src={src} 
+        alt={alt} 
+        className={`${className} ${isLoading ? 'hidden' : 'block'}`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => {
+          setIsLoading(false);
+          setError(true);
+        }}
+      />
+    </>
   );
 };
 
