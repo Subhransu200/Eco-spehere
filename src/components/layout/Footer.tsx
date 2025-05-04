@@ -18,16 +18,16 @@ const Footer = () => {
             Connecting communities for a greener planet. Together we can make a difference.
           </p>
           <div className="flex gap-4">
-            <a href="#" className="text-white hover:text-eco-green-light">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-eco-green-light">
               <Facebook size={20} />
             </a>
-            <a href="#" className="text-white hover:text-eco-green-light">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-eco-green-light">
               <Twitter size={20} />
             </a>
-            <a href="#" className="text-white hover:text-eco-green-light">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-eco-green-light">
               <Instagram size={20} />
             </a>
-            <a href="#" className="text-white hover:text-eco-green-light">
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-white hover:text-eco-green-light">
               <Youtube size={20} />
             </a>
           </div>
