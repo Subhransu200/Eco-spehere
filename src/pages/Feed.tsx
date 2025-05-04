@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -194,7 +195,7 @@ const Feed = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   
   // Fetch posts using React Query
-  const { data: posts, isLoading, error } = useQuery({
+  const { data: fetchedPosts, isLoading, error } = useQuery({
     queryKey: ['posts'],
     queryFn: fetchPosts,
   });
@@ -209,6 +210,9 @@ const Feed = () => {
       });
     }
   }, [error]);
+
+  // Use the fetched posts or fallback to mock data
+  const displayPosts = fetchedPosts || posts;
 
   return (
     <Layout>
@@ -247,51 +251,51 @@ const Feed = () => {
                   Trending
                 </TabsTrigger>
               </TabsList>
-            </Tabs>
-            
-            <CreatePost />
-            
-            <TabsContent value="all" className="mt-0">
-              {isLoading ? (
-                <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eco-green"></div>
-                </div>
-              ) : posts ? (
-                posts.map((post: Post) => (
-                  <PostCard key={post.id} post={post} />
-                ))
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No posts found.</p>
-                </div>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="following" className="mt-0">
-              <div className="text-center py-8">
-                <p className="text-gray-500 mb-4">You aren't following any communities yet.</p>
-                <Link to="/communities">
-                  <Button className="bg-eco-green hover:bg-eco-green-dark">
-                    Discover Communities
-                  </Button>
-                </Link>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="trending" className="mt-0">
-              {posts && posts.length > 0 ? (
-                [...posts]
-                  .sort((a: Post, b: Post) => b.likes - a.likes)
-                  .slice(0, 3)
-                  .map((post: Post) => (
+              
+              <CreatePost />
+              
+              <TabsContent value="all" className="mt-0">
+                {isLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-eco-green"></div>
+                  </div>
+                ) : displayPosts ? (
+                  displayPosts.map((post: Post) => (
                     <PostCard key={post.id} post={post} />
                   ))
-              ) : (
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No posts found.</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="following" className="mt-0">
                 <div className="text-center py-8">
-                  <p className="text-gray-500">No trending posts found.</p>
+                  <p className="text-gray-500 mb-4">You aren't following any communities yet.</p>
+                  <Link to="/communities">
+                    <Button className="bg-eco-green hover:bg-eco-green-dark">
+                      Discover Communities
+                    </Button>
+                  </Link>
                 </div>
-              )}
-            </TabsContent>
+              </TabsContent>
+              
+              <TabsContent value="trending" className="mt-0">
+                {displayPosts && displayPosts.length > 0 ? (
+                  [...displayPosts]
+                    .sort((a: Post, b: Post) => b.likes - a.likes)
+                    .slice(0, 3)
+                    .map((post: Post) => (
+                      <PostCard key={post.id} post={post} />
+                    ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No trending posts found.</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
           </div>
           
           <div className="hidden md:block">
