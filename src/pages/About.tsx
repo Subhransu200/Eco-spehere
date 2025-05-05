@@ -98,7 +98,7 @@ const About = () => {
           <div className="bg-white rounded-xl shadow-md p-8 mb-16">
             <h2 className="text-2xl font-bold text-eco-green-dark mb-4 text-center">Our Story</h2>
             <p className="text-gray-600 mb-4">
-              EcoSphere began in 2023 as a small local initiative by a group of environmental enthusiasts who wanted to coordinate cleanup efforts in their community. What started as a simple message board quickly evolved into a comprehensive platform as more people joined with similar goals but diverse skills.
+              EcoSphere began in 2025 as a small local initiative by a group of environmental enthusiasts who wanted to coordinate cleanup efforts in their community. What started as a simple message board quickly evolved into a comprehensive platform as more people joined with similar goals but diverse skills.
             </p>
             <p className="text-gray-600 mb-4">
               Today, EcoSphere connects thousands of individuals and hundreds of communities worldwide, all working together to address environmental challenges through grassroots action. From urban gardening projects to coastal cleanups, from educational workshops to sustainable marketplace innovations, our platform continues to grow and evolve.
