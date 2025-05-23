@@ -10,6 +10,7 @@ import Marketplace from "./pages/Marketplace";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Feed from "./pages/Feed";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/about" element={<About />} />
           <Route path="/feed" element={<Feed />} />
+          <Route path="/profile" element={<Profile />} />
           {/* Routes mentioned in the footer but not yet implemented */}
           <Route path="/events" element={<NotFound />} />
           <Route path="/impact" element={<NotFound />} />
@@ -39,7 +41,6 @@ const App = () => (
           <Route path="/cookies" element={<NotFound />} />
           <Route path="/login" element={<NotFound />} />
           <Route path="/signup" element={<NotFound />} />
-          <Route path="/profile" element={<NotFound />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

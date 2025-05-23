@@ -28,6 +28,14 @@ const FeedSidebar = () => {
             <Link to="/profile" className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-gray-100">
               <Users className="h-5 w-5 text-eco-green" />
               <div>
+                <span className="text-sm font-medium">My Profile</span>
+                <p className="text-xs text-gray-500">View your profile</p>
+              </div>
+            </Link>
+            
+            <Link to="/communities" className="flex items-center gap-3 py-2 px-3 rounded-md hover:bg-gray-100">
+              <Users className="h-5 w-5 text-eco-green" />
+              <div>
                 <span className="text-sm font-medium">My Communities</span>
                 <p className="text-xs text-gray-500">8 active communities</p>
               </div>
