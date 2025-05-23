@@ -62,7 +62,6 @@ const formatDate = (dateString: string) => {
 const ImageWithFallback = ({ src, alt, className }: { src?: string, alt: string, className?: string }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const fallbackImage = "https://images.unsplash.com/photo-1581092921461-7edd2bec4c15?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80";
   
   if (!src || error) {
     return (
@@ -95,14 +94,7 @@ const ImageWithFallback = ({ src, alt, className }: { src?: string, alt: string,
 
 const PostCard = ({ post }: { post: typeof posts[0] }) => {
   return (
-    <article className="eco-card">
-      <div>
-        <ImageWithFallback 
-          src={post.image} 
-          alt="Post" 
-          className="w-full h-48 md:h-56 object-cover"
-        />
-      </div>
+    <article className="bg-white rounded-xl shadow-md overflow-hidden">
       <div className="p-5">
         <div className="flex items-center gap-3 mb-3">
           <ImageWithFallback 
@@ -126,6 +118,16 @@ const PostCard = ({ post }: { post: typeof posts[0] }) => {
         </div>
         
         <p className="text-gray-700 mb-4">{post.content}</p>
+
+        {post.image && (
+          <div className="mb-4">
+            <ImageWithFallback 
+              src={post.image} 
+              alt="Post" 
+              className="w-full h-48 md:h-56 object-cover rounded-lg"
+            />
+          </div>
+        )}
         
         <div className="flex justify-between items-center text-gray-500 border-t pt-4">
           <button className="flex items-center gap-1 hover:text-eco-green">
@@ -146,35 +148,43 @@ const PostCard = ({ post }: { post: typeof posts[0] }) => {
   );
 };
 
-const RecentPosts = () => {
+interface RecentPostsProps {
+  showTitle?: boolean;
+}
+
+const RecentPosts = ({ showTitle = true }: RecentPostsProps) => {
   return (
-    <section className="py-16">
-      <div className="container">
-        <div className="flex justify-between items-end mb-10">
-          <div>
-            <h2 className="text-3xl font-bold text-eco-green-dark mb-2">Recent Activity</h2>
-            <p className="text-gray-600 max-w-2xl">
-              See what the EcoSphere community is up to and get inspired to make your own impact.
-            </p>
+    <section className={showTitle ? "py-16" : ""}>
+      <div className={showTitle ? "container" : ""}>
+        {showTitle && (
+          <div className="flex justify-between items-end mb-10">
+            <div>
+              <h2 className="text-3xl font-bold text-eco-green-dark mb-2">Recent Activity</h2>
+              <p className="text-gray-600 max-w-2xl">
+                See what the EcoSphere community is up to and get inspired to make your own impact.
+              </p>
+            </div>
+            <Link to="/feed" className="hidden md:flex items-center text-eco-green font-medium hover:text-eco-green-dark">
+              View feed <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </div>
-          <Link to="/feed" className="hidden md:flex items-center text-eco-green font-medium hover:text-eco-green-dark">
-            View feed <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
-        </div>
+        )}
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-6">
           {posts.map(post => (
             <PostCard key={post.id} post={post} />
           ))}
         </div>
         
-        <div className="mt-8 text-center md:hidden">
-          <Link to="/feed">
-            <Button variant="outline" className="border-eco-green text-eco-green hover:bg-eco-green hover:text-white">
-              View All Posts
-            </Button>
-          </Link>
-        </div>
+        {showTitle && (
+          <div className="mt-8 text-center md:hidden">
+            <Link to="/feed">
+              <Button variant="outline" className="border-eco-green text-eco-green hover:bg-eco-green hover:text-white">
+                View All Posts
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

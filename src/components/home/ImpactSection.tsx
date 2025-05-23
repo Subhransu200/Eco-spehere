@@ -5,9 +5,12 @@ import {
   Trash2, 
   Droplets, 
   Users, 
-  ArrowUpRight 
+  ArrowUpRight,
+  ChevronRight 
 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 
 // Mock data for impact statistics
 const impactStats = [
@@ -84,7 +87,50 @@ const ImpactCard = ({ stat }: { stat: typeof impactStats[0] }) => {
   );
 };
 
-const ImpactSection = () => {
+// Simplified compact version for the sidebar
+const SimplifiedImpactCard = () => {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg font-semibold">Impact Progress</CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="space-y-3">
+          {impactStats.map(stat => (
+            <div key={stat.id} className="space-y-1">
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <div className="p-1 bg-eco-green/10 rounded-md">
+                    {React.cloneElement(stat.icon as React.ReactElement, { className: 'w-4 h-4 text-eco-green' })}
+                  </div>
+                  <span className="text-sm font-medium">{stat.title}</span>
+                </div>
+                <span className="text-xs font-medium text-eco-green">
+                  {stat.progress}%
+                </span>
+              </div>
+              <Progress value={stat.progress} className="h-1.5 bg-eco-green/20" />
+            </div>
+          ))}
+          
+          <Link to="/impact" className="flex items-center justify-center text-sm text-eco-green font-medium mt-2 hover:underline">
+            View detailed impact <ChevronRight className="h-3 w-3 ml-1" />
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+interface ImpactSectionProps {
+  simplified?: boolean;
+}
+
+const ImpactSection = ({ simplified = false }: ImpactSectionProps) => {
+  if (simplified) {
+    return <SimplifiedImpactCard />;
+  }
+  
   return (
     <section className="py-16 bg-gradient-to-b from-white to-eco-green/5">
       <div className="container">
@@ -102,12 +148,12 @@ const ImpactSection = () => {
         </div>
         
         <div className="mt-12 text-center">
-          <a 
-            href="#" 
+          <Link 
+            to="/impact" 
             className="inline-flex items-center text-eco-green hover:text-eco-green-dark font-medium"
           >
             Learn how we calculate impact <ArrowUpRight className="ml-1 h-4 w-4" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
