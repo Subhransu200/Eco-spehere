@@ -6,6 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { Link } from 'react-router-dom';
 import { Heart, MessageCircle, Share2, Calendar, ImageOff } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 // Mock data generator for infinite scroll simulation
 const generateMockPosts = (start: number, count: number) => {
@@ -60,6 +61,42 @@ const generateMockPosts = (start: number, count: number) => {
   
   return posts;
 };
+
+// Mock green product advertisements
+const greenProductAds = [
+  {
+    id: 1,
+    title: "Bamboo Toothbrushes",
+    description: "Switch to sustainable oral care with our biodegradable bamboo toothbrushes. Good for you, great for the planet!",
+    image: "https://images.unsplash.com/photo-1615729947596-a598e5de0ab3?ixlib=rb-4.0.3",
+    price: "$12.99",
+    link: "/marketplace/bamboo-toothbrushes"
+  },
+  {
+    id: 2,
+    title: "Reusable Beeswax Wraps",
+    description: "Say goodbye to plastic wrap forever! Our beeswax wraps keep food fresh naturally.",
+    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3",
+    price: "$18.50",
+    link: "/marketplace/beeswax-wraps"
+  },
+  {
+    id: 3,
+    title: "Solar Powered Charger",
+    description: "Charge your devices with the power of the sun. Perfect for outdoor adventures and reducing your carbon footprint.",
+    image: "https://images.unsplash.com/photo-1523712999610-f77fbcfc3843?ixlib=rb-4.0.3",
+    price: "$45.00",
+    link: "/marketplace/solar-charger"
+  },
+  {
+    id: 4,
+    title: "Organic Cotton Tote Bag",
+    description: "Stylish, durable, and 100% organic. These tote bags can replace hundreds of single-use plastic bags.",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3",
+    price: "$15.99",
+    link: "/marketplace/organic-totes"
+  }
+];
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -142,6 +179,38 @@ const PostCard = ({ post }: PostProps) => {
   );
 };
 
+const AdCard = ({ ad }: { ad: typeof greenProductAds[0] }) => {
+  return (
+    <Card className="bg-white rounded-xl shadow-md overflow-hidden mb-4 border-2 border-eco-green/20">
+      <div className="p-5">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs text-eco-green uppercase font-semibold">Sponsored</p>
+          <Link to="/marketplace" className="text-xs text-eco-green hover:underline">View All Products</Link>
+        </div>
+        
+        <Link to={ad.link} className="group">
+          <h3 className="font-bold text-lg mb-2 group-hover:text-eco-green transition-colors">{ad.title}</h3>
+          
+          <div className="mb-3">
+            <ImageWithFallback 
+              src={ad.image} 
+              alt={ad.title} 
+              className="w-full h-48 md:h-56 object-cover rounded-lg"
+            />
+          </div>
+          
+          <p className="text-gray-700 mb-4">{ad.description}</p>
+          
+          <div className="flex justify-between items-center">
+            <p className="font-bold text-eco-green">{ad.price}</p>
+            <span className="bg-eco-green text-white px-3 py-1 rounded-full text-sm">Shop Now</span>
+          </div>
+        </Link>
+      </div>
+    </Card>
+  );
+};
+
 const InfiniteScrollFeed = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -174,11 +243,31 @@ const InfiniteScrollFeed = () => {
     }, 1000);
   };
   
+  // Function to render content with ads inserted every 3 posts
+  const renderFeedContent = () => {
+    const content = [];
+    
+    for (let i = 0; i < posts.length; i++) {
+      // Add the regular post
+      content.push(
+        <PostCard key={`post-${posts[i].id}`} post={posts[i]} />
+      );
+      
+      // Add an ad after every 3rd post (indices 2, 5, 8, etc.)
+      if ((i + 1) % 3 === 0 && i < posts.length - 1) {
+        const adIndex = Math.floor(i / 3) % greenProductAds.length;
+        content.push(
+          <AdCard key={`ad-${i}-${greenProductAds[adIndex].id}`} ad={greenProductAds[adIndex]} />
+        );
+      }
+    }
+    
+    return content;
+  };
+  
   return (
     <div className="space-y-6">
-      {posts.map(post => (
-        <PostCard key={post.id} post={post} />
-      ))}
+      {renderFeedContent()}
       
       {/* Loading indicator */}
       <div ref={ref} className="flex justify-center py-4">
