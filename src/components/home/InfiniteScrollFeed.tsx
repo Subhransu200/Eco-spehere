@@ -7,10 +7,11 @@ import { ImageWithFallback } from '@/components/ui/image-with-fallback';
 import { Link } from 'react-router-dom';
 import { Heart, MessageCircle, Share2, Calendar, ImageOff } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Post, GreenProductAd } from '@/types/post';
 
 // Mock data generator for infinite scroll simulation
-const generateMockPosts = (start: number, count: number) => {
-  const posts = [];
+const generateMockPosts = (start: number, count: number): Post[] => {
+  const posts: Post[] = [];
   
   const communities = ['Urban Gardeners', 'Ocean Guardians', 'Waste Warriors', 'Sustainable Fashion', 'Clean Energy Advocates', 'Zero Waste Living'];
   const userAvatars = [
@@ -25,7 +26,7 @@ const generateMockPosts = (start: number, count: number) => {
     "https://images.unsplash.com/photo-1581092921461-7edd2bec4c15?ixlib=rb-4.0.3",
     "https://images.unsplash.com/photo-1605600659873-d808a13e4d2a?ixlib=rb-4.0.3",
     "https://images.unsplash.com/photo-1581578017093-cd30fce4eeb7?ixlib=rb-4.0.3",
-    null, // Some posts won't have images
+    null,
     "https://images.unsplash.com/photo-1536939459926-301728717817?ixlib=rb-4.0.3"
   ];
   
@@ -63,7 +64,7 @@ const generateMockPosts = (start: number, count: number) => {
 };
 
 // Mock green product advertisements
-const greenProductAds = [
+const greenProductAds: GreenProductAd[] = [
   {
     id: 1,
     title: "Bamboo Toothbrushes",
@@ -98,7 +99,7 @@ const greenProductAds = [
   }
 ];
 
-const formatDate = (dateString: string) => {
+const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     month: 'short',
@@ -106,24 +107,11 @@ const formatDate = (dateString: string) => {
   });
 };
 
-interface PostProps {
-  post: {
-    id: number;
-    user: {
-      name: string;
-      avatar: string;
-    };
-    community: string;
-    date: string;
-    content: string;
-    image?: string | null;
-    likes: number;
-    comments: number;
-    shares: number;
-  }
+interface PostCardProps {
+  post: Post;
 }
 
-const PostCard = ({ post }: PostProps) => {
+const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
     <article className="bg-white rounded-xl shadow-md overflow-hidden mb-4">
       <div className="p-5">
@@ -161,15 +149,15 @@ const PostCard = ({ post }: PostProps) => {
         )}
         
         <div className="flex justify-between items-center text-gray-500 border-t pt-4">
-          <button className="flex items-center gap-1 hover:text-eco-green">
+          <button className="flex items-center gap-1 hover:text-eco-green transition-colors">
             <Heart className="w-4 h-4" />
             <span>{post.likes}</span>
           </button>
-          <button className="flex items-center gap-1 hover:text-eco-green">
+          <button className="flex items-center gap-1 hover:text-eco-green transition-colors">
             <MessageCircle className="w-4 h-4" />
             <span>{post.comments}</span>
           </button>
-          <button className="flex items-center gap-1 hover:text-eco-green">
+          <button className="flex items-center gap-1 hover:text-eco-green transition-colors">
             <Share2 className="w-4 h-4" />
             <span>{post.shares}</span>
           </button>
@@ -179,7 +167,11 @@ const PostCard = ({ post }: PostProps) => {
   );
 };
 
-const AdCard = ({ ad }: { ad: typeof greenProductAds[0] }) => {
+interface AdCardProps {
+  ad: GreenProductAd;
+}
+
+const AdCard: React.FC<AdCardProps> = ({ ad }) => {
   return (
     <Card className="bg-white rounded-xl shadow-md overflow-hidden mb-4 border-2 border-eco-green/20">
       <div className="p-5">
@@ -203,7 +195,7 @@ const AdCard = ({ ad }: { ad: typeof greenProductAds[0] }) => {
           
           <div className="flex justify-between items-center">
             <p className="font-bold text-eco-green">{ad.price}</p>
-            <span className="bg-eco-green text-white px-3 py-1 rounded-full text-sm">Shop Now</span>
+            <span className="bg-eco-green text-white px-3 py-1 rounded-full text-sm hover:bg-eco-green-dark transition-colors">Shop Now</span>
           </div>
         </Link>
       </div>
@@ -211,8 +203,8 @@ const AdCard = ({ ad }: { ad: typeof greenProductAds[0] }) => {
   );
 };
 
-const InfiniteScrollFeed = () => {
-  const [posts, setPosts] = useState<any[]>([]);
+const InfiniteScrollFeed: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -222,12 +214,14 @@ const InfiniteScrollFeed = () => {
   
   // Load initial posts
   useEffect(() => {
+    console.log('Loading initial posts...');
     setPosts(generateMockPosts(0, 5));
   }, []);
   
   // Load more posts when scrolled to bottom
   useEffect(() => {
     if (inView && !isLoading) {
+      console.log('Loading more posts...');
       loadMorePosts();
     }
   }, [inView]);
@@ -240,12 +234,13 @@ const InfiniteScrollFeed = () => {
       setPosts((prevPosts) => [...prevPosts, ...newPosts]);
       setPage((prevPage) => prevPage + 1);
       setIsLoading(false);
+      console.log('Loaded more posts, total:', posts.length + 5);
     }, 1000);
   };
   
   // Function to render content with ads inserted every 3 posts
   const renderFeedContent = () => {
-    const content = [];
+    const content: React.ReactElement[] = [];
     
     for (let i = 0; i < posts.length; i++) {
       // Add the regular post
