@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Menu, X, Leaf, Search, User, Bell } from 'lucide-react';
+import { Menu, X, Leaf, Bell, User } from 'lucide-react';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -30,9 +31,7 @@ const Navbar = () => {
 
         {/* Right Icons */}
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" size="icon" className="text-gray-700">
-            <Search className="h-5 w-5" />
-          </Button>
+          <SearchBar />
           <Button variant="ghost" size="icon" className="text-gray-700">
             <Bell className="h-5 w-5" />
           </Button>
