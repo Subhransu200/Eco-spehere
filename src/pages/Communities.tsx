@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Search, Filter, MapPin, TreePine, Droplets, Trash2 } from 'lucide-react';
+import { Users, Search, Filter, MapPin, TreePine, Droplets, Trash2, Plus } from 'lucide-react';
+import CreateCommunityForm from '@/components/communities/CreateCommunityForm';
+import CommunityChat from '@/components/communities/CommunityChat';
 
 // Mock data for communities
 const communitiesList = [
@@ -168,20 +169,18 @@ const Communities = () => {
       </div>
       
       <div className="container py-12">
-        <Tabs defaultValue="all" className="w-full">
+        <Tabs defaultValue="browse" className="w-full">
           <div className="flex justify-between items-center flex-wrap gap-4 mb-6">
             <TabsList>
-              <TabsTrigger value="all" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
-                All Communities
+              <TabsTrigger value="browse" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                Browse Communities
               </TabsTrigger>
-              <TabsTrigger value="plants" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
-                Plants & Trees
+              <TabsTrigger value="create" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                <Plus className="h-4 w-4 mr-1" />
+                Create Community
               </TabsTrigger>
-              <TabsTrigger value="water" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
-                Water & Oceans
-              </TabsTrigger>
-              <TabsTrigger value="waste" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
-                Waste & Recycling
+              <TabsTrigger value="joined" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                My Communities
               </TabsTrigger>
             </TabsList>
             
@@ -190,44 +189,99 @@ const Communities = () => {
             </Button>
           </div>
           
-          <TabsContent value="all" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {communitiesList.map(community => (
-                <CommunityCard key={community.id} community={community} />
-              ))}
+          <TabsContent value="browse" className="mt-0">
+            <Tabs defaultValue="all" className="w-full">
+              <TabsList className="mb-6">
+                <TabsTrigger value="all" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                  All Communities
+                </TabsTrigger>
+                <TabsTrigger value="plants" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                  Plants & Trees
+                </TabsTrigger>
+                <TabsTrigger value="water" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                  Water & Oceans
+                </TabsTrigger>
+                <TabsTrigger value="waste" className="data-[state=active]:bg-eco-green data-[state=active]:text-white">
+                  Waste & Recycling
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="all" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {communitiesList.map(community => (
+                    <CommunityCard key={community.id} community={community} />
+                  ))}
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="plants" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {communitiesList
+                    .filter(community => community.category === "Plants")
+                    .map(community => (
+                      <CommunityCard key={community.id} community={community} />
+                    ))
+                  }
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="water" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {communitiesList
+                    .filter(community => community.category === "Water")
+                    .map(community => (
+                      <CommunityCard key={community.id} community={community} />
+                    ))
+                  }
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="waste" className="mt-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {communitiesList
+                    .filter(community => community.category === "Waste")
+                    .map(community => (
+                      <CommunityCard key={community.id} community={community} />
+                    ))
+                  }
+                </div>
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+          
+          <TabsContent value="create" className="mt-0">
+            <div className="max-w-2xl mx-auto">
+              <CreateCommunityForm />
             </div>
           </TabsContent>
           
-          <TabsContent value="plants" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {communitiesList
-                .filter(community => community.category === "Plants")
-                .map(community => (
-                  <CommunityCard key={community.id} community={community} />
-                ))
-              }
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="water" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {communitiesList
-                .filter(community => community.category === "Water")
-                .map(community => (
-                  <CommunityCard key={community.id} community={community} />
-                ))
-              }
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="waste" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {communitiesList
-                .filter(community => community.category === "Waste")
-                .map(community => (
-                  <CommunityCard key={community.id} community={community} />
-                ))
-              }
+          <TabsContent value="joined" className="mt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-xl font-semibold text-eco-green-dark mb-4">Your Communities</h3>
+                <div className="space-y-4">
+                  {communitiesList.slice(0, 3).map(community => (
+                    <div key={community.id} className="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50">
+                      <img 
+                        src={community.image} 
+                        alt={community.name} 
+                        className="w-16 h-16 object-cover rounded-lg"
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-medium">{community.name}</h4>
+                        <p className="text-sm text-gray-500">{community.members.toLocaleString()} members</p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        View
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <CommunityChat />
+              </div>
             </div>
           </TabsContent>
         </Tabs>

@@ -10,7 +10,6 @@ import Communities from "./pages/Communities";
 import Marketplace from "./pages/Marketplace";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import Feed from "./pages/Feed";
 import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient({
@@ -34,7 +33,6 @@ const App = () => (
             <Route path="/communities" element={<Communities />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/about" element={<About />} />
-            <Route path="/feed" element={<Feed />} />
             <Route path="/profile" element={<Profile />} />
             {/* Routes mentioned in the footer but not yet implemented */}
             <Route path="/events" element={<NotFound />} />

@@ -20,13 +20,12 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Desktop Nav - Updated order to place Feed second */}
+        {/* Desktop Nav - Updated to replace Feed with About */}
         <nav className="hidden md:flex items-center gap-6">
           <Link to="/" className="text-gray-700 hover:text-eco-green font-medium">Home</Link>
-          <Link to="/feed" className="text-gray-700 hover:text-eco-green font-medium">Feed</Link>
+          <Link to="/about" className="text-gray-700 hover:text-eco-green font-medium">About Us</Link>
           <Link to="/communities" className="text-gray-700 hover:text-eco-green font-medium">Communities</Link>
           <Link to="/marketplace" className="text-gray-700 hover:text-eco-green font-medium">Marketplace</Link>
-          <Link to="/about" className="text-gray-700 hover:text-eco-green font-medium">About</Link>
         </nav>
 
         {/* Right Icons */}
@@ -65,7 +64,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Mobile menu - Updated order to place Feed second */}
+      {/* Mobile menu - Updated to replace Feed with About */}
       <div className={cn(
         "fixed inset-x-0 top-16 z-50 bg-white border-b border-gray-200 md:hidden transition-transform duration-300 ease-in-out",
         isMenuOpen ? "transform translate-y-0" : "transform -translate-y-full"
@@ -79,11 +78,11 @@ const Navbar = () => {
             Home
           </Link>
           <Link 
-            to="/feed" 
+            to="/about" 
             className="px-4 py-2 hover:bg-gray-100 rounded-md"
             onClick={() => setIsMenuOpen(false)}
           >
-            Feed
+            About Us
           </Link>
           <Link 
             to="/communities" 
@@ -98,13 +97,6 @@ const Navbar = () => {
             onClick={() => setIsMenuOpen(false)}
           >
             Marketplace
-          </Link>
-          <Link 
-            to="/about" 
-            className="px-4 py-2 hover:bg-gray-100 rounded-md"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            About
           </Link>
           <hr className="my-2" />
           <div className="flex gap-2">
